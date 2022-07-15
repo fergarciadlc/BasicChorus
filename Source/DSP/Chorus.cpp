@@ -12,29 +12,33 @@
 Chorus::Chorus() {}
 Chorus::~Chorus() {}
 
-void Chorus::setChorusParameters(int rate, float depth, int centreDelay, float feedback, float mix)
+void Chorus::setChorusParameters(chorusParams params)
 {
-    chorus.setRate(rate);
-    chorus.setDepth(depth);
-    chorus.setCentreDelay(centreDelay);
-    chorus.setFeedback(feedback);
-    chorus.setMix(mix);
     
+    chorus.setRate(params.rate);
+    chorus.setDepth(params.depth);
+    chorus.setCentreDelay(params.centreDelay);
+    chorus.setFeedback(params.feedback);
+    chorus.setMix(params.mix);
 }
 
 void Chorus::prepare(juce::dsp::ProcessSpec spec)
 {
-    
+    chorusParams params;
     chorus.prepare(spec);
     chorus.reset();
-    setChorusParameters();
+    setChorusParameters(params);
 }
 
-void Chorus::process(juce::AudioBuffer<float>& inBuffer)
+void Chorus::process(juce::AudioBuffer<float>& inBuffer, chorusParams params)
 {
-    
-    
-    juce::dsp::AudioBlock<float> sampleBlock (inBuffer);
-    chorus.process (juce::dsp::ProcessContextReplacing<float> (sampleBlock));
+//    setChorusParameters(params);
+//    juce::dsp::AudioBlock<float> sampleBlock (inBuffer);
+//    chorus.process (juce::dsp::ProcessContextReplacing<float> (sampleBlock));
+//
+    setChorusParameters(params);
+    juce::dsp::AudioBlock<float> block(inBuffer);
+    juce::dsp::ProcessContextReplacing<float> context(block);
+    chorus.process(context);
 }
 

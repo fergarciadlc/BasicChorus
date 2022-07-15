@@ -36,17 +36,17 @@ juce::AudioProcessorValueTreeState::ParameterLayout BasicChorusAudioProcessor::c
     parameters.add(std::make_unique<juce::AudioParameterInt>("rate",
                                                              "rate",
                                                              0,
-                                                             99,
-                                                             0));
+                                                             5,
+                                                             1));
 
     parameters.add(std::make_unique<juce::AudioParameterFloat>("depth",
                                                                "depth",
-                                                               juce::NormalisableRange<float>(0.0f, 10.0f),
+                                                               juce::NormalisableRange<float>(0.0f, 1.0f),
                                                                0.25f));
     
     parameters.add(std::make_unique<juce::AudioParameterInt>("centreDelay",
                                                              "centreDelay",
-                                                             1,
+                                                             10,
                                                              100,
                                                              1));
     
@@ -58,7 +58,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout BasicChorusAudioProcessor::c
     parameters.add(std::make_unique<juce::AudioParameterFloat>("mix",
                                                                "mix",
                                                                juce::NormalisableRange<float>(0.0f, 1.0f),
-                                                               0.0f));
+                                                               0.25f));
 
     return parameters;
 }
@@ -177,11 +177,16 @@ void BasicChorusAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
+        
     
-//    float rate = apvts.getRawParameterValue("rate")->load();
+    chorusParams.rate = apvts.getRawParameterValue("rate")->load();
+    chorusParams.depth = apvts.getRawParameterValue("depth")->load();
+    chorusParams.centreDelay = apvts.getRawParameterValue("centreDelay")->load();
+    chorusParams.feedback = apvts.getRawParameterValue("feedback")->load();
+    chorusParams.mix = apvts.getRawParameterValue("mix")->load();
 
 
-    chorus.process(buffer);
+    chorus.process(buffer, chorusParams);
 }
 
 //==============================================================================

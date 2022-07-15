@@ -58,6 +58,7 @@ public:
     juce::AudioProcessorValueTreeState::ParameterLayout createParameters();
 
 private:
+    chorusParams chorusParams;
     Chorus chorus;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BasicChorusAudioProcessor)
